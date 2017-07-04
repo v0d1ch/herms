@@ -16,8 +16,39 @@ dependencies:
   - directory
   - microlens >= 0.4.8.0 && < 0.5
   - microlens-th
+  - monad-logger
+  - persistent
+  - persistent-sqlite
+  - persistent-template
+  - resource-pool
+  - resourcet
   - split     >= 0.2.3 && < 0.3
+  - text
   - vty       >= 5.15.0 && < 5.16
+
+default-extensions:
+  - BangPatterns
+  - ConstraintKinds
+  - DataKinds
+  - DeriveDataTypeable
+  - DeriveGeneric
+  - EmptyDataDecls
+  - FlexibleContexts
+  - FlexibleInstances
+  - GADTs
+  - GeneralizedNewtypeDeriving
+  - MultiParamTypeClasses
+  - NoMonomorphismRestriction
+  - OverloadedStrings
+  - QuasiQuotes
+  - RankNTypes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - TemplateHaskell
+  - TupleSections
+  - TypeFamilies
+  - TypeOperators
+  - ViewPatterns
 
 library:
   source-dirs: src

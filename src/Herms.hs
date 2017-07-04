@@ -77,16 +77,18 @@ remove targets = forM_ targets $ \ target -> do
   renameFile tempName fileName
 
 help :: [String] -> IO ()
-help _ = putStr $ unlines $ "Usage:" : usage where
+help _ = putStr $ unlines $ "Usage:" : usage
+  where
+    usage = map (\ (c, d) -> concat [ padRight size c, " - ", d ]) desc
+    size  = maximum $ map (length . fst) desc
 
-  usage = map (\ (c, d) -> concat [ padRight size c, " - ", d ]) desc
-  size  = maximum $ map (length . fst) desc
-  desc  = [ ("./herms list", "list recipes")
-          , ("./herms view (\"Recipe Name\"|Index)", "view a particular recipe")
-          , ("./herms add", "add a new recipe (interactive)")
-          , ("./herms remove (\"Recipe Name\"|Index)", "remove a particular recipe")
-          , ("./herms help", "display this help")
-          ]
+    desc :: [(String, String)]
+    desc  = [ ("./herms list", "list recipes")
+            , ("./herms view (\"Recipe Name\"|Index)", "view a particular recipe")
+            , ("./herms add", "add a new recipe (interactive)")
+            , ("./herms remove (\"Recipe Name\"|Index)", "remove a particular recipe")
+            , ("./herms help", "display this help")
+            ]
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("add", add)
