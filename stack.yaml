@@ -1,0 +1,12 @@
+resolver: lts-8.21
+
+packages:
+- '.'
+
+extra-deps:
+  - brick-0.19
+  - data-clist-0.1.1.0
+
+flags: {}
+
+extra-package-dbs: []

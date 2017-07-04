@@ -1,17 +1,15 @@
-module Main where
+module Herms where
 
-import System.Environment
-import System.Directory
-import System.IO
-import Control.Monad
-import Data.Char
-import Data.Ratio
-import Data.List
-import Data.Maybe
-import Control.Applicative
-import Text.Read
-import Herms.Utils
+import System.Directory (removeFile, renameFile)
+import System.IO (hClose, hPutStr, openTempFile)
+import Control.Applicative (Alternative(..))
+import Control.Monad (forM_, guard)
+import Data.List (delete)
+import Data.Maybe (listToMaybe)
+import Text.Read (readMaybe)
+
 import Herms.AddCLI
+import Herms.Utils
 import Herms.Types
 
 -- Global constant
@@ -104,10 +102,3 @@ herms args = do
   guard (not $ null args)
   action <- lookup (head args) dispatch
   return $ action (tail args)
-
-main :: IO ()
-main = do
-  testCmd <- getArgs
-  case herms testCmd of
-    Nothing -> help [""]
-    Just io -> io

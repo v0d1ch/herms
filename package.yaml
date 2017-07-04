@@ -1,0 +1,32 @@
+name:                herms
+version:             0.1.0.0
+homepage:            https://github.com/JackKiefer/herms#readme
+license:             GPL-3
+author:              Jack Kiefer
+maintainer:          jack.c.kiefer@gmail.com
+copyright:           2017, Jack Kiefer
+category:            Command Line Tool
+extra-source-files:
+- README.md
+
+#     >= 0.17 && < 0.20
+dependencies:
+  - base      >= 4.7 && < 5
+  - brick
+  - directory
+  - microlens >= 0.4.8.0 && < 0.5
+  - microlens-th
+  - split     >= 0.2.3 && < 0.3
+  - vty       >= 5.15.0 && < 5.16
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Herms
+
+executables:
+  herms:
+    dependencies:
+      - herms
+    source-dirs:      app
+    main:             Main.hs
