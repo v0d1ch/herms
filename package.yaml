@@ -12,6 +12,7 @@ extra-source-files:
 #     >= 0.17 && < 0.20
 dependencies:
   - base      >= 4.7 && < 5
+  - blaze-markup
   - brick
   - directory
   - microlens >= 0.4.8.0 && < 0.5
@@ -22,6 +23,8 @@ dependencies:
   - persistent-template
   - resource-pool
   - resourcet
+  - safe
+  - shakespeare
   - split     >= 0.2.3 && < 0.3
   - text
   - vty       >= 5.15.0 && < 5.16

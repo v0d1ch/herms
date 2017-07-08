@@ -5,23 +5,15 @@ import System.IO (hClose, hPutStr, openTempFile)
 import Control.Applicative (Alternative(..))
 import Control.Monad (forM_, guard)
 import Data.List (delete)
-import Data.Maybe (listToMaybe)
 import Text.Read (readMaybe)
 
 import Herms.AddCLI
 import Herms.Utils
 import Herms.Types
+import qualified Herms.Persist as P
 
--- Global constant
-fileName = "recipes"
-
-getRecipeBook :: IO [Recipe]
-getRecipeBook = do
-  contents <- readFile fileName
-  return $ map read $ lines contents
-
-getRecipe :: String -> [Recipe] -> Maybe Recipe
-getRecipe target = listToMaybe . filter ((target ==) . recipeName)
+-- Constant
+defaultRecipeFile = "recipes"
 
 add :: [String] -> IO ()
 add _ = do
@@ -32,7 +24,7 @@ add _ = do
   response <- getLine
   if response == "y" || response == "Y" 
     then do 
-    appendFile fileName (show newRecipe ++ "\n")
+    appendFile defaultRecipeFile (show newRecipe ++ "\n")
     putStrLn "Recipe saved!"
   else
     putStrLn "Recipe discarded."
@@ -47,7 +39,7 @@ readRecipeRef target recipeBook =
 
 view :: [String] -> IO ()
 view targets = do
-  recipeBook <- getRecipeBook
+  recipeBook <- getRecipeBook defaultRecipeFile
   forM_ targets $ \ target -> do
     putStr $ case readRecipeRef target recipeBook of
       Nothing   -> target ++ " does not exist\n"
@@ -55,7 +47,7 @@ view targets = do
 
 list :: [String] -> IO ()
 list _  = do
-  recipes <- getRecipeBook
+  recipes <- getRecipeBook defaultRecipeFile
   let recipeList = map recipeName recipes
       size       = length $ show $ length recipeList
       indices    = map (padLeft size . show) [1..]
@@ -63,7 +55,7 @@ list _  = do
 
 remove :: [String] -> IO ()
 remove targets = forM_ targets $ \ target -> do
-  recipeBook <- getRecipeBook
+  recipeBook <- getRecipeBook defaultRecipeFile
   (tempName, tempHandle) <- openTempFile "." "herms_temp"
   case readRecipeRef target recipeBook of
     Nothing   -> putStrLn $ target ++ " does not exist\n"
@@ -73,8 +65,8 @@ remove targets = forM_ targets $ \ target -> do
       hPutStr tempHandle $ unlines $ show <$> newRecpBook
       putStrLn "Recipe deleted."
   hClose tempHandle
-  removeFile fileName
-  renameFile tempName fileName
+  removeFile defaultRecipeFile
+  renameFile tempName defaultRecipeFile
 
 help :: [String] -> IO ()
 help _ = putStr $ unlines $ "Usage:" : usage
@@ -87,14 +79,16 @@ help _ = putStr $ unlines $ "Usage:" : usage
             , ("./herms view (\"Recipe Name\"|Index)", "view a particular recipe")
             , ("./herms add", "add a new recipe (interactive)")
             , ("./herms remove (\"Recipe Name\"|Index)", "remove a particular recipe")
+            , ("./herms migrate recipes", "Migrate the recipes flat-file to a sqlite3 database")
             , ("./herms help", "display this help")
             ]
 
 dispatch :: [(String, [String] -> IO ())]
 dispatch = [ ("add", add)
-           , ("view", view)
+           , ("view", P.view)
            , ("remove", remove)
            , ("list", list)
+           , ("migrate", P.migrate)
            , ("help", help)
            ]
 

@@ -2,6 +2,7 @@ module Herms.Types where
 
 import Data.List
 import Data.List.Split
+import Data.Maybe (listToMaybe)
 import Data.Ratio
 import Data.Ord
 
@@ -78,3 +79,10 @@ fillVoid :: [[String]] -> Int -> [[String]]
 fillVoid [] _ = []
 fillVoid (x:xs) n = fillVoidTo x n : fillVoid xs n
 
+getRecipeBook :: String -> IO [Recipe]
+getRecipeBook filename = do
+  contents <- readFile filename
+  return $ map read $ lines contents
+
+getRecipe :: String -> [Recipe] -> Maybe Recipe
+getRecipe target = listToMaybe . filter ((target ==) . recipeName)
